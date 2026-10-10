@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#245b4f">
+  <title>BMI Buddy — Your Health, Your Progress</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <section id="authSection" class="auth-page">
+    <div class="auth-card">
+      <a class="brand auth-brand" href="#" aria-label="BMI Buddy Home">
+        <span class="brand-icon">♥</span>
+        <span>BMI Buddy<small>Your Health, Your Progress</small></span>
+      </a>
+      <p class="auth-eyebrow">YOUR PERSONAL WELLNESS SPACE</p>
+      <h1 id="authHeading">Create your account</h1>
+      <p class="auth-intro">Your account details are saved only in this browser on this device.</p>
+      <p id="authMessage" class="auth-message hidden" role="status" aria-live="polite"></p>
+
+      <form id="signupForm" class="form-stack auth-form">
+        <label for="signupName">Name</label>
+        <input id="signupName" name="name" type="text" autocomplete="name" maxlength="60" placeholder="Enter your name" required>
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" name="password" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters" required>
+        <label for="signupConfirmPassword">Confirm password</label>
+        <input id="signupConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Enter password again" required>
+        <label for="signupFavouriteColour">Favourite colour</label>
+        <input id="signupFavouriteColour" name="favouriteColour" type="text" maxlength="40" placeholder="Used for password reset" required>
+        <button class="button button-primary button-full" type="submit">Create account</button>
+        <p class="auth-switch">Already have an account? <button id="showLoginBtn" class="text-button" type="button">Log in</button></p>
+      </form>
+
+      <form id="loginForm" class="form-stack auth-form hidden">
+        <label for="loginName">Name</label>
+        <input id="loginName" name="name" type="text" autocomplete="username" maxlength="60" placeholder="Enter your name" required>
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+        <button class="button button-primary button-full" type="submit">Log in</button>
+        <p class="auth-switch"><button id="showForgotBtn" class="text-button" type="button">Forgot password?</button></p>
+        <p class="auth-switch">New to BMI Buddy? <button id="showSignupBtn" class="text-button" type="button">Create an account</button></p>
+      </form>
+
+      <form id="forgotForm" class="form-stack auth-form hidden">
+        <p class="muted">Enter your account name and the favourite colour you used during signup.</p>
+        <label for="forgotName">Name</label>
+        <input id="forgotName" name="name" type="text" autocomplete="username" maxlength="60" required>
+        <label for="forgotColour">Favourite colour</label>
+        <input id="forgotColour" name="favouriteColour" type="text" maxlength="40" required>
+        <label for="forgotNewPassword">New password</label>
+        <input id="forgotNewPassword" name="newPassword" type="password" autocomplete="new-password" minlength="6" required>
+        <label for="forgotConfirmPassword">Confirm new password</label>
+        <input id="forgotConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required>
+        <button class="button button-primary button-full" type="submit">Reset password</button>
+        <p class="auth-switch"><button id="backToLoginBtn" class="text-button" type="button">Back to login</button></p>
+      </form>
+      <p class="auth-disclaimer">Demo login only: this is not secure authentication. Anyone with access to this browser profile may be able to inspect or change local data. Do not use a real or reused password.</p>
+    </div>
+  </section>
+
+  <div id="appShell" hidden>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="BMI Buddy Home">
+        <span class="brand-icon">♥</span>
+        <span>BMI Buddy<small>Your Health, Your Progress</small></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="local-label"><span class="status-dot"></span> Saved on this device</span>
+        <button id="logoutBtn" class="button button-secondary button-small" type="button">Log out</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL WELLNESS SPACE</p>
+          <h1>A healthier routine starts with <span>small steps.</span></h1>
+          <p class="hero-copy">Keep family profiles, track progress and build healthy everyday habits in one simple place.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span class="hero-heart">♥</span>
+          <span class="hero-leaf leaf-one">✦</span>
+          <span class="hero-leaf leaf-two">✿</span>
+        </div>
+      </section>
+
+      <section class="privacy-note">
+        <span class="note-icon">🔒</span>
+        <div>
+          <strong>Your data stays in this browser</strong>
+          <p>Use Backup Data regularly to keep a separate copy of your profiles.</p>
+        </div>
+      </section>
+
+      <section class="section-heading">
+        <div>
+          <p class="eyebrow">FAMILY DASHBOARD</p>
+          <h2>Your profiles</h2>
+          <p class="muted">Each family member has their own progress history.</p>
+        </div>
+        <button id="addProfileBtn" class="button button-primary" type="button"><span>＋</span> Add profile</button>
+      </section>
+
+      <section id="profileList" class="profile-grid" aria-live="polite"></section>
+      <section id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">☺</div>
+        <h3>Your first profile starts here</h3>
+        <p>Add a family member to begin recording wellness information.</p>
+        <button id="emptyAddBtn" class="button button-primary" type="button">Create first profile</button>
+      </section>
+
+      <section id="profileDetails" class="details-section hidden">
+        <div class="details-header">
+          <div>
+            <p class="eyebrow">PERSONAL DASHBOARD</p>
+            <h2 id="selectedName">Your profile</h2>
+            <p id="selectedSubtitle" class="muted"></p>
+          </div>
+          <button id="deleteProfileBtn" class="button button-danger-outline" type="button">Delete profile</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-label">Latest height</span>
+            <strong id="heightStat">—</strong>
+            <span class="stat-foot">cm and feet/inches</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Latest weight</span>
+            <strong id="weightStat">—</strong>
+            <span class="stat-foot">kilograms</span>
+          </article>
+          <article class="stat-card stat-highlight">
+            <span class="stat-label">BMI calculation</span>
+            <strong id="bmiStat">—</strong>
+            <span id="bmiFoot" class="stat-foot">Based on recorded measurements</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Records saved</span>
+            <strong id="recordsStat">0</strong>
+            <span class="stat-foot">progress entries</span>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">PROGRESS JOURNAL</p>
+                <h3>Add a measurement</h3>
+              </div>
+              <span class="panel-icon">↗</span>
+            </div>
+            <form id="measurementForm" class="form-stack">
+              <div class="height-entry-group">
+                <label for="measurementHeight">Height in centimetres (optional)</label>
+                <input id="measurementHeight" name="heightCm" type="number" min="50" max="250" step="0.1" placeholder="e.g. 173">
+                <p class="field-hint">Or enter feet and inches below. For example, 5 ft 8 in.</p>
+                <div class="height-pair">
+                  <label for="measurementHeightFeet">Feet
+                    <input id="measurementHeightFeet" type="number" min="1" max="8" step="1" placeholder="5">
+                  </label>
+                  <label for="measurementHeightInches">Inches
+                    <input id="measurementHeightInches" type="number" min="0" max="11" step="1" placeholder="8">
+                  </label>
+                </div>
+              </div>
+              <label>Weight (kg)
+                <input id="measurementWeight" name="weight" type="number" min="2" max="500" step="0.1" placeholder="e.g. 60" required>
+              </label>
+              <label>Date
+                <input id="measurementDate" name="date" type="date" required>
+              </label>
+              <label>Note (optional)
+                <textarea id="measurementNote" name="note" rows="2" maxlength="300" placeholder="How are your habits going?"></textarea>
+              </label>
+              <button class="button button-primary button-full" type="submit">Save progress entry</button>
+            </form>
+          </article>
+
+          <article class="panel assessment-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">PERSONALIZED TO YOU</p>
+                <h3>Personal Health Assessment</h3>
+              </div>
+              <span class="panel-icon">✿</span>
+            </div>
+            <p class="muted small-copy">Fill this assessment once. Your answers stay saved in this browser and are used to personalize your plan. Progress Journal, Journey, and measurements remain separate.</p>
+            <div id="assessmentSavedNotice" class="assessment-saved hidden" role="status"></div>
+            <button id="editAssessmentBtn" class="button button-secondary hidden" type="button">Edit Personal Assessment</button>
+
+            <form id="assessmentForm" class="form-stack assessment-form">
+              <label for="planMonths">How long would you like your habit plan to be?</label>
+              <select id="planMonths" name="planMonths">
+                <option value="1">1 month</option>
+                <option value="2">2 months</option>
+                <option value="3" selected>3 months</option>
+                <option value="4">4 months</option>
+                <option value="5">5 months</option>
+                <option value="6">6 months</option>
+                <option value="9">9 months</option>
+                <option value="12">12 months</option>
+              </select>
+
+              <label for="waterGlasses">About how many glasses of water do you drink daily?</label>
+              <select id="waterGlasses" name="waterGlasses">
+                <option value="">Choose one</option>
+                <option value="0-2">0–2 glasses</option>
+                <option value="3-5">3–5 glasses</option>
+                <option value="6-8">6–8 glasses</option>
+                <option value="9+">9 or more glasses</option>
+                <option value="unsure">Not sure</option>
+              </select>
+
+              <label for="breakfastFoods">What do you usually eat for breakfast? Include approximate portions if you can.</label>
+              <textarea id="breakfastFoods" name="breakfastFoods" rows="2" maxlength="500" placeholder="e.g. poha and a glass of milk"></textarea>
+              <label for="lunchFoods">What do you usually eat for lunch?</label>
+              <textarea id="lunchFoods" name="lunchFoods" rows="2" maxlength="500" placeholder="e.g. 2 rotis, dal and sabzi"></textarea>
+              <label for="dinnerFoods">What do you usually eat for dinner?</label>
+              <textarea id="dinnerFoods" name="dinnerFoods" rows="2" maxlength="500" placeholder="Describe your usual meal and portions"></textarea>
+              <label for="snackFoods">Snacks, sweets and drinks you have most days</label>
+              <textarea id="snackFoods" name="snackFoods" rows="2" maxlength="500" placeholder="e.g. fruit, biscuits, tea, packaged snacks"></textarea>
+
+              <label for="activityType">What physical activity do you usually do?</label>
+              <select id="activityType" name="activityType">
+                <option value="none">Little or no planned activity</option>
+                <option value="walking">Walking</option>
+                <option value="running">Running or jogging</option>
+                <option value="sports">Sports / cycling / dancing</option>
+                <option value="gym">Gym or strength exercises</option>
+                <option value="mixed">A mix of activities</option>
+              </select>
+
+              <div class="assessment-two-col">
+                <label for="activityDays">Days per week
+                  <select id="activityDays" name="activityDays">
+                    <option value="0">0</option>
+                    <option value="1-2">1–2</option>
+                    <option value="3-4">3–4</option>
+                    <option value="5-7">5–7</option>
+                  </select>
+                </label>
+                <label for="activityMinutes">Minutes each time
+                  <select id="activityMinutes" name="activityMinutes">
+                    <option value="0">0</option>
+                    <option value="1-15">1–15</option>
+                    <option value="16-30">16–30</option>
+                    <option value="31-60">31–60</option>
+                    <option value="60+">60+</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="assessment-two-col">
+                <label for="wakeTime">Usual wake-up time
+                  <input id="wakeTime" name="wakeTime" type="time">
+                </label>
+                <label for="sleepTime">Usual sleep time
+                  <input id="sleepTime" name="sleepTime" type="time">
+                </label>
+              </div>
+
+              <label for="sleepHours">How many hours do you usually sleep?</label>
+              <select id="sleepHours" name="sleepHours">
+                <option value="">Choose one</option>
+                <option value="under6">Less than 6 hours</option>
+                <option value="6-7">6–7 hours</option>
+                <option value="7-9">7–9 hours</option>
+                <option value="9+">More than 9 hours</option>
+                <option value="unsure">Not sure</option>
+              </select>
+
+              <label for="screenHours">Daily recreational screen time (mobile, TV, gaming)</label>
+              <select id="screenHours" name="screenHours">
+                <option value="">Choose one</option>
+                <option value="under2">Under 2 hours</option>
+                <option value="2-4">2–4 hours</option>
+                <option value="4-6">4–6 hours</option>
+                <option value="6+">6+ hours</option>
+                <option value="unsure">Not sure</option>
+              </select>
+
+              <label for="routineNotes">Anything else about your routine, food preferences or barriers? (optional)</label>
+              <textarea id="routineNotes" name="routineNotes" rows="2" maxlength="700" placeholder="e.g. long school hours, vegetarian, mostly sitting while studying"></textarea>
+              <button class="button button-primary button-full" type="submit">Generate My Personal Plan</button>
+            </form>
+            <p class="field-hint">Food descriptions alone cannot give a reliable calorie count without accurate portions and a food database. BMI Buddy will not invent exact calories or promise a target BMI by a deadline.</p>
+          </article>
+        </div>
+
+        <article class="panel roadmap-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">A GENTLE GUIDE</p>
+              <h3>Your Custom Weekly Plan</h3>
+            </div>
+            <span class="panel-icon">◎</span>
+          </div>
+          <p class="muted small-copy">Weekly advice is personalized using your assessment answers. Choose a duration in the assessment above; this plan supports healthy habits and does not promise a particular weight or BMI.</p>
+          <div id="planSummary" class="plan-summary" aria-live="polite"></div>
+          <div id="planControls" class="plan-controls"></div>
+          <div id="roadmap" class="roadmap-grid"></div>
+          <section id="weeklyReviewPanel" class="weekly-review-panel hidden" aria-live="polite"></section>
+        </article>
+
+        <article class="panel history-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">YOUR RECORDS</p>
+              <h3>Progress history</h3>
+            </div>
+            <button id="downloadReportBtn" class="button button-secondary" type="button">Download report</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </article>
+      </section>
+
+      <section class="tools-section">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">KEEP YOUR INFORMATION SAFE</p>
+            <h2>Backup &amp; restore</h2>
+            <p class="muted">Save a backup file or restore a previously saved one.</p>
+          </div>
+        </div>
+        <div class="backup-grid">
+          <article class="backup-card">
+            <div class="backup-icon">↓</div>
+            <h3>Backup Data</h3>
+            <p>Download all profiles and their progress as a JSON backup file.</p>
+            <button id="backupBtn" class="button button-primary button-full" type="button">Download backup</button>
+          </article>
+          <article class="backup-card">
+            <div class="backup-icon">↑</div>
+            <h3>Restore Data</h3>
+            <p>Choose a BMI Buddy backup file to restore your saved information.</p>
+            <input id="restoreInput" type="file" accept=".json,application/json" class="hidden">
+            <button id="restoreBtn" class="button button-secondary button-full" type="button">Choose backup file</button>
+            <p class="tiny-warning">Restoring replaces the profiles currently saved in this browser.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="important-note">
+        <h3>Important health information</h3>
+        <p>BMI is only a screening measure and cannot determine someone's overall health. For people under 18, BMI needs age- and sex-specific growth-chart interpretation by a qualified health professional. This app does not provide diagnoses or automatic weight-loss targets.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>♥ BMI Buddy</p>
+      <p>Small habits. Steady progress. Be kind to yourself.</p>
+    </footer>
+
+    <dialog id="profileDialog" class="dialog">
+      <form id="profileForm" class="dialog-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">FAMILY PROFILE</p>
+            <h2>Add a profile</h2>
+          </div>
+          <button id="closeDialogBtn" class="close-button" type="button" aria-label="Close dialog">×</button>
+        </div>
+
+        <label>Full name or nickname
+          <input id="profileName" name="name" type="text" maxlength="60" placeholder="e.g. Alex" required>
+        </label>
+        <label>Age (years)
+          <input id="profileAge" name="age" type="number" min="2" max="120" placeholder="e.g. 25" required>
+        </label>
+        <label>Sex used for clinical BMI growth-chart interpretation
+          <select id="profileSex" name="sex" required>
+            <option value="">Select an option</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="unspecified">Prefer not to say / not specified</option>
+          </select>
+        </label>
+
+        <div class="height-entry-group">
+          <label for="profileHeight">Initial height in centimetres (optional)
+            <input id="profileHeight" name="heightCm" type="number" min="50" max="250" step="0.1" placeholder="e.g. 173">
+          </label>
+          <p class="field-hint">Or enter feet and inches below. Example: 5 ft 8 in.</p>
+          <div class="height-pair">
+            <label for="profileHeightFeet">Feet
+              <input id="profileHeightFeet" type="number" min="1" max="8" step="1" placeholder="5">
+            </label>
+            <label for="profileHeightInches">Inches
+              <input id="profileHeightInches" type="number" min="0" max="11" step="1" placeholder="8">
+            </label>
+          </div>
+        </div>
+
+        <label>Initial weight (kg)
+          <input id="profileWeight" name="weight" type="number" min="2" max="500" step="0.1" placeholder="e.g. 60" required>
+        </label>
+        <label>Main wellness goal
+          <select id="profileGoal" name="goal" required>
+            <option value="balanced">Build balanced daily habits</option>
+            <option value="activity">Be more active</option>
+            <option value="sleep">Improve sleep routine</option>
+            <option value="nutrition">Improve meal routine</option>
+            <option value="energy">Support everyday energy</option>
+          </select>
+        </label>
+
+        <p class="form-help">Enter accurate information. For children and teenagers, discuss growth and weight concerns with a qualified healthcare professional.</p>
+        <div class="dialog-actions">
+          <button id="cancelDialogBtn" class="button button-secondary" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Save profile</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>
